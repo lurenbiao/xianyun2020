@@ -14,27 +14,30 @@
       </el-row>
 
       <el-row type="flex" align="middle">
-         <!-- 如果用户存在则展示用户信息，用户数据来自store -->
-                <el-dropdown v-if="this.$store.state.user.userInfo.token">
-                    <el-row type="flex" align="middle" class="el-dropdown-link">
-                        <nuxt-link to="#">
-                            <img :src="$axios.defaults.baseURL+$store.state.user.userInfo.user.defaultAvatar"/>
-                            {{this.$store.state.user.userInfo.user.nickname}}
-                        </nuxt-link>
-                        <i class="el-icon-caret-bottom el-icon--right"></i>
-                    </el-row>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>
-                           <nuxt-link to="#">个人中心</nuxt-link>
-                        </el-dropdown-item>
-                        <el-dropdown-item>
-                            <div @click="exit">退出</div> 
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
+        <!-- 如果用户存在则展示用户信息，用户数据来自store -->
+        <el-dropdown v-if="this.$store.state.user.userInfo.token">
+          <el-row type="flex" align="middle" class="el-dropdown-link">
+            <nuxt-link to="#">
+              <img :src="$axios.defaults.baseURL+$store.state.user.userInfo.user.defaultAvatar" />
+              {{this.$store.state.user.userInfo.user.nickname}}
+            </nuxt-link>
+            <i class="el-icon-caret-bottom el-icon--right"></i>
+          </el-row>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>
+              <nuxt-link to="#">个人中心</nuxt-link>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <div @click="exit">退出</div>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
 
-
-        <nuxt-link to="/user/login" class="account-link" v-if="!this.$store.state.user.userInfo.token">登录 / 注册</nuxt-link>
+        <nuxt-link
+          to="/user/login"
+          class="account-link"
+          v-if="!this.$store.state.user.userInfo.token"
+        >登录 / 注册</nuxt-link>
         {{this.$store.state.user.name}}
       </el-row>
     </el-row>
@@ -43,13 +46,19 @@
 
 <script>
 export default {
-  methods:{
-    exit:function(){
-       this.$message({
-          showClose: true,
-          message: '退出成功',
-          type: 'success'
-        });
+  methods: {
+    exit: function() {
+      this.$store.commit("user/setUserInfo", {
+        userInfo: {
+          token: "",
+          user: {}
+        }
+      });
+      this.$message({
+        showClose: true,
+        message: "退出成功",
+        type: "success"
+      });
     }
   }
 };
@@ -97,51 +106,49 @@ export default {
         background: #409eff;
         color: #fff !important;
       }
-     
     }
-      .message{
-            height:36px;
-            line-height:1;
-            cursor:pointer;
-            .el-icon-bell{
-                margin-right:2px;
-                font-size:18px;      
-            }
+    .message {
+      height: 36px;
+      line-height: 1;
+      cursor: pointer;
+      .el-icon-bell {
+        margin-right: 2px;
+        font-size: 18px;
+      }
+    }
+
+    .el-dropdown-link {
+      margin-left: 20px;
+
+      &:hover {
+        img {
+          border-color: #409eff;
         }
+      }
 
-        .el-dropdown-link{
-           margin-left:20px;
+      a {
+        display: block;
+      }
 
-           &:hover{
-               img{
-                    border-color: #409eff;
-               }
-            }
+      img {
+        width: 32px;
+        height: 32px;
+        vertical-align: middle;
+        border: 2px #fff solid;
+        border-radius: 50px;
+      }
+    }
 
-           a{
-               display:block;
-           }
+    .account-link {
+      font-size: 14px;
+      margin-left: 10px;
+      color: #666;
 
-            img{
-
-                width:32px;
-                height:32px;
-                vertical-align: middle;
-                border:2px #fff solid;
-                border-radius:50px;
-            }
-        }
-
-        .account-link{
-            font-size: 14px;
-            margin-left:10px;
-            color:#666;
-
-            &:hover{
-                color:#409eff;
-                text-decoration: underline;
-            }
-        }
+      &:hover {
+        color: #409eff;
+        text-decoration: underline;
+      }
+    }
   }
 }
 </style>

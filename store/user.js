@@ -21,5 +21,15 @@ export const actions= {
            commit('setUserInfo',data);
            return data;
           });
+    },
+    zhuce({commit},data){
+      return this.$axios({
+        url:'accounts/register',
+        method:'POST',
+        data
+      }).then(res=>{
+        console.log('注册成功');
+        
+      })
     }
 }
