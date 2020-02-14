@@ -4,7 +4,9 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <div></div>
+        <div>
+          <FlightsFilters :data="flightsData" @setDataList="setDataList"/>
+        </div>
 
         <!-- 航班头部布局 -->
         <div>
@@ -47,10 +49,22 @@
 import moment from "moment";
 import FlightsListHead from "@/components/air/flightsListHead.vue";
 import FlightsItem from "@/components/air/flightsItem.vue";
+import FlightsFilters from "@/components/air/flightsFilters.vue";
 export default {
   data() {
     return {
-      flightsData: {},
+      flightsData: {
+        // 航班总数据
+        flights: [],
+        info: {},
+        options: {}
+      },
+      cacheFlightsData: {
+        // 缓存一份数据，只会修改一次
+        flights: [],
+        info: {},
+        options: {}
+      },
       dataList: [],
       pageIndex: 1, // 当前页数
       pageSize: 5 // 显示条数
@@ -58,28 +72,34 @@ export default {
   },
   components: {
     FlightsListHead,
-    FlightsItem
+    FlightsItem,
+    FlightsFilters
   },
   methods: {
-   setDataList(){
-            const start = (this.pageIndex - 1) * this.pageSize; 
-            const end = start + this.pageSize; 
-            this.dataList = this.flightsData.flights.slice(start, end);
-        },
+    setDataList(arr) {
+      if (arr) {
+        this.pageIndex = 1;
+        this.flightsData.flights = arr;
+        this.flightsData.total = arr.length;
+      }
 
-        // 切换条数时触发
-        handleSizeChange(value){
-            this.pageSize = value;
-            this.pageIndex = 1;
-            this.setDataList();
-        },
+      const start = (this.pageIndex - 1) * this.pageSize;
+      const end = start + this.pageSize;
+      this.dataList = this.flightsData.flights.slice(start, end);
+    },
 
-        // 切换页数时触发
-        handleCurrentChange(value){
-            this.pageIndex = value;
-            this.setDataList();
-        },
+    // 切换条数时触发
+    handleSizeChange(value) {
+      this.pageSize = value;
+      this.pageIndex = 1;
+      this.setDataList();
+    },
 
+    // 切换页数时触发
+    handleCurrentChange(value) {
+      this.pageIndex = value;
+      this.setDataList();
+    }
   },
   mounted() {
     this.$axios({
@@ -89,6 +109,7 @@ export default {
       console.log(res);
       this.flightsData = res.data;
       this.dataList = this.flightsData.flights;
+      this.cacheFlightsData = { ...res.data };
       this.setDataList();
     });
   }
