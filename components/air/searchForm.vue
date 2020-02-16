@@ -191,11 +191,15 @@ export default {
         this.$message.error("请选择时间");
         return;
       }
+      const airs = JSON.parse(localStorage.getItem("airs") || `[]`);
+      airs.push(this.form);
+      localStorage.setItem("airs", JSON.stringify(airs));
+
       this.$router.push({
         path: "/air/flights",
-        // query是url的参数
         query: this.form
       });
+  
     }
   },
   mounted() {}
